@@ -5,7 +5,7 @@ import './index.css';
 /*
 TODOs
 1. Display the location for each move in the format (col, row) in the move history list.
-2. Bold the currently selected item in the move list.
+2. DONE Bold the currently selected item in the move list. 
 3. Rewrite Board to use two loops to make the squares instead of hardcoding them.
 4. Add a toggle button that lets you sort the moves in either ascending or descending order.
 5. When someone wins, highlight the three squares that caused the win.
@@ -33,17 +33,17 @@ class Board extends React.Component {
   render() {
     return (
       <div>
-        <div className="board-row">
+        <div className="board-row1">
           {this.renderSquare(0)}
           {this.renderSquare(1)}
           {this.renderSquare(2)}
         </div>
-        <div className="board-row">
+        <div className="board-row2">
           {this.renderSquare(3)}
           {this.renderSquare(4)}
           {this.renderSquare(5)}
         </div>
-        <div className="board-row">
+        <div className="board-row3">
           {this.renderSquare(6)}
           {this.renderSquare(7)}
           {this.renderSquare(8)}
@@ -59,6 +59,7 @@ class Game extends React.Component {
     this.state = {
       history: [{
         squares: Array(9).fill(null),
+        location: null,
       }],
       stepNumber: 0,
       xIsNext: true,
@@ -77,7 +78,8 @@ class Game extends React.Component {
     squares[i] = this.state.xIsNext ? 'X' : 'O';
     this.setState({
       history: history.concat([{
-        squares: squares,  
+        squares: squares,
+        location: i,  
       }]),
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
@@ -91,20 +93,23 @@ class Game extends React.Component {
     });
   }
 
+
+
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
 
     const moves = history.map((step, move) => {
+      const locCurr = getColRow(step.location);
       const desc = move ?
-        'Go to move #' + move :
+        'Go to move #' + move + ' at (' + locCurr[0] + ', ' + locCurr[1] + ')': //col + row need to be added still
         'Got to game start';
 
       if (step === current) {
         return (
           <li key={move}>
-            <button onClick={() => this.jumpTo(move)}><b>{desc}</b></button>
+            <button onClick={() => this.jumpTo(move)}> <b>{desc}</b> </button>
           </li>
         );
       } else {
@@ -115,11 +120,6 @@ class Game extends React.Component {
         );
       }
 
-      //return (
-        //  <li key={move}>
-        //    <button onClick={() => this.jumpTo(move)}><b>{desc}</b></button>
-        //  </li>
-        //);
     });
 
     let status;
@@ -163,6 +163,29 @@ function calculateWinner(squares) {
   }
   return null;
 }
+
+function getColRow(input) {
+    switch (input) {
+      case 0:
+        return [0, 0];
+      case 1:
+        return [1, 0];
+      case 2:
+        return [2, 0];
+      case 3:
+        return [0, 1];
+      case 4:
+        return [1, 1];
+      case 5: 
+        return [2, 1];
+      case 6:
+        return [0, 2];
+      case 7:
+        return [1, 2];
+      case 8:
+        return [2, 2];
+    }
+  }
 
 // ========================================
 
