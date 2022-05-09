@@ -4,9 +4,9 @@ import './index.css';
 
 /*
 TODOs
-1. Display the location for each move in the format (col, row) in the move history list.
+1. DONE Display the location for each move in the format (col, row) in the move history list.
 2. DONE Bold the currently selected item in the move list. 
-3. Rewrite Board to use two loops to make the squares instead of hardcoding them.
+3. DONE Rewrite Board to use two loops to make the squares instead of hardcoding them.
 4. Add a toggle button that lets you sort the moves in either ascending or descending order.
 5. When someone wins, highlight the three squares that caused the win.
 6. When no one wins, display a message about the result being a draw.
@@ -30,26 +30,39 @@ class Board extends React.Component {
     );
   }
 
+  createGrid = () => {
+    // some vars, ie size of grid
+    let cols = 3;
+    let rows = 3;
+
+    let grid = []; // container where the whole grid goes
+
+    let count = 0;
+
+    //outer loop to create rows
+    for (let i = 0; i < rows; i++) {
+      let rowItems = [];
+
+      //inner loop to create colums
+      for (let j = 0; j < cols; j++) {
+        rowItems.push(this.renderSquare(count));
+        count++;
+      }
+
+      //insert rowItems into grid as row
+      grid.push(<div className="board-row"> {rowItems} </div>);
+    }
+
+    return grid;
+  }
+
   render() {
+
     return (
       <div>
-        <div className="board-row1">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row2">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row3">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
+        {this.createGrid()}
       </div>
-    );
+      );
   }
 }
 
