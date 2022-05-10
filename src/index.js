@@ -7,7 +7,7 @@ TODOs
 1. DONE Display the location for each move in the format (col, row) in the move history list.
 2. DONE Bold the currently selected item in the move list. 
 3. DONE Rewrite Board to use two loops to make the squares instead of hardcoding them.
-4. Add a toggle button that lets you sort the moves in either ascending or descending order.
+4. DONE Add a toggle button that lets you sort the moves in either ascending or descending order.
 5. When someone wins, highlight the three squares that caused the win.
 6. When no one wins, display a message about the result being a draw.
 */
@@ -76,6 +76,7 @@ class Game extends React.Component {
       }],
       stepNumber: 0,
       xIsNext: true,
+      ascending: true,
     };
   }
 
@@ -106,18 +107,18 @@ class Game extends React.Component {
     });
   }
 
+  reverseOrder() {
+    this.setState({
+      ascending: !this.state.ascending
+    });
+  }
 
-
-  render() {
-    const history = this.state.history;
-    const current = history[this.state.stepNumber];
-    const winner = calculateWinner(current.squares);
-
+  renderMoves(history, current) {
     const moves = history.map((step, move) => {
       const locCurr = getColRow(step.location);
       const desc = move ?
         'Go to move #' + move + ' at (' + locCurr[0] + ', ' + locCurr[1] + ')': //col + row need to be added still
-        'Got to game start';
+        'Go to game start';
 
       if (step === current) {
         return (
@@ -135,6 +136,25 @@ class Game extends React.Component {
 
     });
 
+    return moves;
+  }
+
+  copyToState(list) {
+    this.setState({
+      moves: list,
+    })
+  }
+
+
+  render() {
+    const history = this.state.history;
+    const current = history[this.state.stepNumber];
+    const winner = calculateWinner(current.squares);
+    const ascending = this.state.ascending;
+
+    const moves = this.renderMoves(history, current);
+    //this.copyToState(moves);
+
     let status;
     if (winner) {
       status = 'Winner: ' + winner;
@@ -149,8 +169,9 @@ class Game extends React.Component {
           />
         </div>
         <div className="game-info">
+          <button onClick={() => this.reverseOrder()}> Reverse order </button>
           <div>{status}</div>
-          <ol>{moves}</ol>
+          <ol>{ascending ? moves : moves.reverse()}</ol>
         </div>
       </div>
     );
