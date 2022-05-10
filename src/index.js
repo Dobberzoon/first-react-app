@@ -8,13 +8,15 @@ TODOs
 2. DONE Bold the currently selected item in the move list. 
 3. DONE Rewrite Board to use two loops to make the squares instead of hardcoding them.
 4. DONE Add a toggle button that lets you sort the moves in either ascending or descending order.
-5. When someone wins, highlight the three squares that caused the win.
-6. When no one wins, display a message about the result being a draw.
+5. ???? When someone wins, highlight the three squares that caused the win.
+6. DONE When no one wins, display a message about the result being a draw.
 */
 
 function Square(props) {
+
   return (
-    <button className="square" onClick={props.onClick}>
+    <button className="square" 
+            onClick={props.onClick}>
       {props.value}
     </button>
   );
@@ -139,25 +141,23 @@ class Game extends React.Component {
     return moves;
   }
 
-  copyToState(list) {
-    this.setState({
-      moves: list,
-    })
-  }
-
 
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
     const ascending = this.state.ascending;
+    const step = this.state.stepNumber;
 
     const moves = this.renderMoves(history, current);
-    //this.copyToState(moves);
 
     let status;
     if (winner) {
       status = 'Winner: ' + winner;
+    } 
+
+    if (step > 8) {
+      status = 'Draw';
     }
 
     return (
@@ -169,9 +169,11 @@ class Game extends React.Component {
           />
         </div>
         <div className="game-info">
-          <button onClick={() => this.reverseOrder()}> Reverse order </button>
           <div>{status}</div>
-          <ol>{ascending ? moves : moves.reverse()}</ol>
+          <ol> {ascending ? moves : moves.reverse()}</ol>
+          <button className="reverse-button" 
+                  onClick={() => this.reverseOrder()}> Reverse order 
+                  </button>
         </div>
       </div>
     );
@@ -192,6 +194,7 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      
       return squares[a];
     }
   }
